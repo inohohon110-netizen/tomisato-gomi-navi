@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1">
+
+<title>富里区ごみナビ</title>
+
+<link rel="stylesheet"
+href="style.css">
+
+</head>
+
+ <body>
+
+  <h1>🗑 富里区ごみナビ</h1>  
+
+ 
+<input
+id="searchBox"
+type="text"
+placeholder="品目名を入力">
+
+<!-- AI判定結果 -->
+
+<div id="aiResult"></div>
+
+<div id="aiKubun"></div>
+
+<!-- 五十音 -->
+
+<div id="gojuon">
+
+
+
+
+
+
+
+
+ <button id="btn-あ" onclick="setKana('あ')">あ</button>
+<button id="btn-か" onclick="setKana('か')">か</button>
+<button id="btn-さ" onclick="setKana('さ')">さ</button>
+
+<button id="btn-た" onclick="setKana('た')">た</button>
+<button id="btn-な" onclick="setKana('な')">な</button>
+ 
+<button id="btn-は" onclick="setKana('は')">は</button>
+<button id="btn-ま" onclick="setKana('ま')">ま</button>
+<button id="btn-や" onclick="setKana('や')">や</button>
+<button id="btn-ら" onclick="setKana('ら')">ら</button>
+<button id="btn-わ" onclick="setKana('わ')">わ</button>
+ 
+</div>
+ 
+<!-- フィルター -->
+ 
+<div id="filterButtons">
+ 
+<button
+id="btn-clear"
+onclick="clearFilter()">
+クリア
+</button>
+ 
+<button
+id="btn-all"
+class="allBtn"
+onclick="filterKubun('')">
+全部
+</button>
+ 
+<button
+id="btn-burn"
+class="burnBtn"
+onclick="filterKubun('燃えるごみ')">
+燃える
+</button>
+ 
+<button
+id="btn-nonburn"
+class="nonBurnBtn"
+onclick="filterKubun('燃えないごみ')">
+燃えない
+</button>
+ 
+<button
+id="btn-resource"
+class="resourceBtn"
+onclick="filterKubun('資源物')">
+資源物
+</button>
+ 
+<button
+id="btn-bulky"
+class="bulkyBtn"
+onclick="filterKubun('粗大ごみ')">
+粗大
+</button>
+ 
+</div>
+ 
+<div id="count"></div>
+ 
+<div id="resultCount"></div>
+ 
+
+<!-- 写真判定 -->
+
+<div id="photoSearch">
+
+
+
+
+
+
+  <input
+type="file"
+id="cameraInput"
+accept="image/*"
+capture="environment">
+
+<button id="photoBtn">
+📷 写真で判定
+</button>
+
+<br><br>
+
+<img
+id="preview"
+style="max-width:300px;display:none;">
+
+<div id="aiResult"></div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="result"></div>
+
+
+<div id="notice">
+
+<h3>ご利用にあたって</h3>
+
+<p>
+本サービスは富里区ごみ分別案内の試験版です。
+</p>
+
+<p>
+掲載内容には十分注意しておりますが、
+最新情報や制度変更が反映されていない場合があります。
+</p>
+
+<p>
+最終的な分別方法や収集方法については、
+自治体が発行する最新のごみ分別案内をご確認ください。
+</p>
+
+<p>
+本サービスの利用により生じた損害等について、
+提供者は責任を負いかねます。
+</p>
+
+</div>
+
+
+
+
+<button
+id="topButton"
+onclick="goTop()">
+
+↑ TOP
+
+</button>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
+
+<script src="app.js"></script>
+
+
+
+
+
+
+</body>
+</html>
