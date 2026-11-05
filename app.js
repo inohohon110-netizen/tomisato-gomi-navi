@@ -1,9 +1,25 @@
+let model;
+
 let garbageData = [];
 
 let currentKana = "";
 let currentKubun = "";
 let displayLimit = 50;
 let currentResults = [];
+
+
+
+async function loadModel(){
+
+  document.getElementById("aiResult").innerHTML =
+    "AIモデル読込中...";
+
+  model = await mobilenet.load();
+
+  document.getElementById("aiResult").innerHTML =
+    "AI準備完了";
+}
+
 
 
 // --------------------
@@ -761,78 +777,203 @@ function toggleCard(title){
 
 }
 
-let model;
-
-async function loadModel(){
-
-  model = await mobilenet.load();
-
-  console.log("AI読込完了");
-
-}
-
-loadModel();
 
 
-const cameraInput =
-document.getElementById("cameraInput");
 
-const preview =
-document.getElementById("preview");
 
-cameraInput.addEventListener("change", async (e)=>{
+document.addEventListener("DOMContentLoaded", () => {
 
-  const file = e.target.files[0];
+  const cameraInput =
+    document.getElementById("cameraInput");
 
-  if(!file) return;
+  const preview =
+    document.getElementById("preview");
 
-  preview.src =
-    URL.createObjectURL(file);
+  if(!cameraInput || !preview){
+    console.log("cameraInput または preview が見つかりません");
+    return;
+  }
 
-  preview.style.display = "block";
+  cameraInput.addEventListener("change", (e) => {
+
+    const file = e.target.files[0];
+
+    if(!file) return;
+
+    preview.src =
+      URL.createObjectURL(file);
+
+    preview.style.display = "block";
+  });
 
 });
 
-document
-.getElementById("photoBtn")
-.addEventListener("click", analyzeImage);
+
+
+/* 一番最後に追加 */
+document.addEventListener("DOMContentLoaded", () => {
+    loadModel();
+});
 
 async function analyzeImage(){
+
+  const preview =
+    document.getElementById("preview");
 
   if(!preview.src){
 
     alert("写真を選択してください");
-
     return;
-
   }
 
   const predictions =
     await model.classify(preview);
+
 
   const result =
     predictions[0].className
     .split(",")[0]
     .trim();
 
+let candidateHtml =
+  "<h3>🔍 AI候補 TOP5</h3>";
+
+predictions.forEach((p, index) => {
+
+  const name =
+    p.className.split(",")[0].trim();
+
+  const percent =
+    Math.round(p.probability * 100);
+
+  candidateHtml +=
+    `${index + 1}位：${name} (${percent}%)<br>`;
+});
+
+document.getElementById("aiKubun")
+.innerHTML = candidateHtml;
+
+
+
+
+
+
   const itemMap = {
 
-    "water bottle":"ペットボトル",
-    "beer bottle":"びん",
-    "bottle":"びん",
-    "plastic bag":"レジ袋",
-    "soda can":"缶"
+  "water bottle":"ペットボトル",
+  "bottle":"びん",
+  "beer bottle":"びん",
 
-  };
+  "can":"缶",
+  "soda can":"缶",
 
-  const jpName =
-    itemMap[result] || result;
+  "newspaper":"新聞紙",
+  "book":"本",
+  "carton":"紙パック",
+  "cardboard":"段ボール",
+
+  "plastic bag":"レジ袋",
+
+  "remote control":"リモコン",
+  "keyboard":"キーボード",
+  "mouse":"マウス",
+
+  "cellular telephone":"携帯電話",
+  "mobile phone":"携帯電話",
+
+  "vacuum":"掃除機",
+  "hair dryer":"ドライヤー",
+  "fan":"扇風機",
+
+  "television":"テレビ",
+
+  "battery":"乾電池"
+};
+
+
+
+
+
+const jpName =
+  itemMap[result] || result;
+
+document
+  .getElementById("aiResult")
+  .innerHTML =
+  "AI判定：" + jpName;
+
+
+/* AIおすすめ表示 */
+const exact =
+  garbageData.find(
+    item => item.name === jpName
+  );
+
+if(exact){
+
+  let top5Html =
+    "<h3>🔍 AI候補 TOP5</h3>";
+
+  predictions.forEach((p, index) => {
+
+    const enName =
+      p.className.split(",")[0].trim();
+
+    const jpCandidate =
+      itemMap[enName] || enName;
+
+    const percent =
+      Math.round(p.probability * 100);
+
+    top5Html += `
+<button
+  class="aiCandidateBtn"
+  onclick="selectAIItem('${jpCandidate}')">
+
+  ${index + 1}位：
+  ${jpCandidate}
+  (${percent}%)
+
+</button><br>
+`;
+  
+  });   // ←これを追加
+  
+  
+  
+  document
+    .getElementById("aiKubun")
+    .innerHTML = `
+      <div class="aiRecommend">
+
+        <h3>✅ AIおすすめ</h3>
+
+        <p><b>品目：</b>${exact.name}</p>
+
+        <p><b>区分：</b>${exact.kubun}</p>
+
+        <p><b>出し方：</b>${exact.method}</p>
+
+        <hr>
+
+        ${top5Html}
+
+      </div>
+    `;
+
+}
+else{
 
   document
-    .getElementById("aiResult")
-    .innerHTML =
-    "AI判定：" + jpName;
+    .getElementById("aiKubun")
+    .innerHTML = "";
 
+}
+
+
+
+
+  
   document
     .getElementById("searchBox")
     .value =
@@ -845,3 +986,18 @@ async function analyzeImage(){
     );
 
 }
+
+function selectAIItem(name){
+
+  document
+    .getElementById("searchBox")
+    .value = name;
+
+  document
+    .getElementById("searchBox")
+    .dispatchEvent(
+      new Event("input")
+    );
+
+}
+

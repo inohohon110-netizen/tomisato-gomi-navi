@@ -14,6 +14,10 @@ href="style.css">
 
 </head>
 
+dore
+
+
+
  <body>
 
   <h1>🗑 富里区ごみナビ</h1>  
@@ -23,6 +27,9 @@ href="style.css">
 id="searchBox"
 type="text"
 placeholder="品目名を入力">
+
+
+
 
 <!-- AI判定結果 -->
 
@@ -102,38 +109,38 @@ onclick="filterKubun('粗大ごみ')">
 </button>
  
 </div>
- 
-<div id="count"></div>
- 
-<div id="resultCount"></div>
- 
-
-<!-- 写真判定 -->
-
-<div id="photoSearch">
 
 
 
+<div class="aiArea">
 
-
+  <h3>📷 AIごみ判定</h3>
 
   <input
-type="file"
-id="cameraInput"
-accept="image/*"
-capture="environment">
+    type="file"
+    id="cameraInput"
+    accept="image/*"
+    capture="environment"
+  >
 
-<button id="photoBtn">
-📷 写真で判定
-</button>
+  <br><br>
 
-<br><br>
+  <img
+    id="preview"
+    style="max-width:250px; display:none;"
+  >
 
-<img
-id="preview"
-style="max-width:300px;display:none;">
+  <br><br>
 
-<div id="aiResult"></div>
+  <button
+    id="aiButton"
+    onclick="analyzeImage()"
+  >
+    AI判定
+  </button>
+
+  <div id="aiResult"></div>
+
 
 </div>
 
@@ -148,6 +155,25 @@ style="max-width:300px;display:none;">
 
 
 
+
+ 
+<div id="count"></div>
+ 
+<div id="resultCount"></div>
+ 
+
+<!-- 写真判定 -->
+
+<div id="photoSearch">
+
+
+
+  
+
+<br><br>
+
+
+</div>
 
 
 <div id="result"></div>
@@ -178,17 +204,11 @@ style="max-width:300px;display:none;">
 
 </div>
 
-
-
-
 <button
 id="topButton"
 onclick="goTop()">
-
 ↑ TOP
-
 </button>
-
 
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
 
@@ -196,10 +216,6 @@ onclick="goTop()">
 
 <script src="app.js"></script>
 
-
-
-
-
-
 </body>
 </html>
+

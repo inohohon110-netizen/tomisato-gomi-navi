@@ -496,3 +496,35 @@ body{
 
 }
 
+#aiKubun{
+
+  background:#ffffff;
+  border-left:5px solid #0b6b3a;
+  padding:12px;
+  margin:10px 0;
+  border-radius:8px;
+  line-height:1.8;
+
+}
+.aiCandidateBtn{
+
+  width:100%;
+  margin:5px 0;
+  padding:10px;
+
+  border:none;
+  border-radius:8px;
+
+  background:#e8f5e9;
+  color:#0b6b3a;
+
+  font-weight:bold;
+  cursor:pointer;
+
+}
+
+.aiCandidateBtn:hover{
+
+  background:#c8e6c9;
+
+}
