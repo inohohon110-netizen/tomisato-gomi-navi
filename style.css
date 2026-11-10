@@ -527,4 +527,20 @@ body{
 
   background:#c8e6c9;
 
+}.aiRecommend{
+  background:#fff;
+  margin:15px 0;
+  padding:15px;
+  border-radius:12px;
+  border-left:6px solid #4CAF50;
+}
+
+.aiCandidateBtn{
+  width:100%;
+  margin:5px 0;
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  background:#eef7ff;
+  font-size:16px;
 }

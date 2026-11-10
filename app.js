@@ -1,4 +1,4 @@
-let model;
+let model = null;
 
 let garbageData = [];
 
@@ -593,12 +593,12 @@ const count = garbageData.filter(item => {
                 "btn-" + kana
             );
 
-        if(btn){
+       if(btn){
 
-            btn.innerHTML =
-`${kana}行<br>(${count})`;
+    btn.innerHTML =
+      `${kana}行<br>(${count})`;
 
-        }
+}
 
     });
 
@@ -817,86 +817,322 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function analyzeImage(){
 
+  
+
   const preview =
     document.getElementById("preview");
 
+
+
+
+
   if(!preview.src){
 
-    alert("写真を選択してください");
+    
     return;
   }
+
+
+
+
 
   const predictions =
     await model.classify(preview);
 
 
-  const result =
-    predictions[0].className
-    .split(",")[0]
-    .trim();
-
-let candidateHtml =
-  "<h3>🔍 AI候補 TOP5</h3>";
-
-predictions.forEach((p, index) => {
-
-  const name =
-    p.className.split(",")[0].trim();
-
-  const percent =
-    Math.round(p.probability * 100);
-
-  candidateHtml +=
-    `${index + 1}位：${name} (${percent}%)<br>`;
-});
-
-document.getElementById("aiKubun")
-.innerHTML = candidateHtml;
 
 
 
 
 
+ const itemMap = {
 
-  const itemMap = {
+  
 
-  "water bottle":"ペットボトル",
-  "bottle":"びん",
-  "beer bottle":"びん",
+// =====================
+// アルミ缶へ統合
+// =====================
 
-  "can":"缶",
-  "soda can":"缶",
+"beer can":"アルミ缶",
+"aluminum can":"アルミ缶",
+"soda can":"アルミ缶",
+"drink can":"アルミ缶",
 
-  "newspaper":"新聞紙",
-  "book":"本",
-  "carton":"紙パック",
-  "cardboard":"段ボール",
+"oil filter":"アルミ缶",
+"fuel filter":"アルミ缶",
+"air filter":"アルミ缶",
+"cartridge":"アルミ缶",
 
-  "plastic bag":"レジ袋",
+"metal cylinder":"アルミ缶",
+"cylinder":"アルミ缶",
 
-  "remote control":"リモコン",
-  "keyboard":"キーボード",
-  "mouse":"マウス",
+"measuring cup":"アルミ缶",
+"beaker":"アルミ缶",
 
-  "cellular telephone":"携帯電話",
-  "mobile phone":"携帯電話",
+// =====================
+// スチール缶
+// =====================
 
-  "vacuum":"掃除機",
-  "hair dryer":"ドライヤー",
-  "fan":"扇風機",
+"tin can":"スチール缶",
+"steel can":"スチール缶",
+"metal can":"スチール缶",
 
-  "television":"テレビ",
+// =====================
+// ペットボトルへ統合
+// =====================
 
-  "battery":"乾電池"
+"water bottle":"ペットボトル",
+"plastic bottle":"ペットボトル",
+"sports bottle":"ペットボトル",
+"drink bottle":"ペットボトル",
+
+"water jug":"ペットボトル",
+"jug":"ペットボトル",
+"pitcher":"ペットボトル",
+"carafe":"ペットボトル",
+
+"thermos":"ペットボトル",
+"vacuum bottle":"ペットボトル",
+"flask":"ペットボトル",
+
+// =====================
+// ガラスびんへ統合
+// =====================
+
+"beer bottle":"びん",
+"wine bottle":"びん",
+"medicine bottle":"びん",
+"perfume bottle":"びん",
+
+"glass bottle":"びん",
+"milk bottle":"びん",
+"juice bottle":"びん",
+
+"jar":"びん",
+"glass jar":"びん",
+
+// =====================
+// 紙類へ統合
+// =====================
+
+"newspaper":"新聞紙",
+
+"magazine":"雑誌",
+"comic book":"雑誌",
+
+"book":"本",
+"textbook":"本",
+"notebook":"本",
+
+"envelope":"紙類",
+"document":"紙類",
+"folder":"紙類",
+
+"paper bag":"紙袋",
+
+"cardboard":"段ボール",
+
+"carton":"紙パック",
+
+// =====================
+// プラ容器へ統合
+// =====================
+
+"plastic container":"プラ容器",
+"food container":"プラ容器",
+"storage container":"プラ容器",
+
+"plastic tray":"食品トレー",
+"food tray":"食品トレー",
+
+"plastic cup":"プラカップ",
+
+"plastic lid":"プラふた",
+
+"plastic wrap":"ラップ",
+
+// =====================
+// コップ類
+// =====================
+
+"coffee mug":"マグカップ",
+"mug":"マグカップ",
+
+"cup":"コップ",
+"drinking glass":"コップ",
+
+"glass":"ガラスコップ",
+
+"wine glass":"ワイングラス",
+
+// =====================
+// 家電
+// =====================
+
+"television":"テレビ",
+"radio":"ラジオ",
+
+"speaker":"スピーカー",
+
+"headphone":"ヘッドホン",
+"earphone":"イヤホン",
+
+"laptop":"ノートパソコン",
+
+"computer":"パソコン",
+"desktop computer":"パソコン",
+
+"monitor":"モニター",
+"display":"モニター",
+"screen":"モニター",
+
+"printer":"プリンター",
+
+"keyboard":"キーボード",
+"mouse":"マウス",
+
+"scanner":"スキャナー",
+
+"cellular telephone":"携帯電話",
+"mobile phone":"携帯電話",
+"smartphone":"スマートフォン",
+
+"telephone":"電話機",
+
+"camera":"カメラ",
+"digital camera":"カメラ",
+
+// =====================
+// 調理器具
+// =====================
+
+"frying pan":"フライパン",
+"pan":"フライパン",
+
+"pot":"鍋",
+"saucepan":"鍋",
+
+"kettle":"やかん",
+
+"teapot":"急須",
+
+"tray":"トレー",
+
+"cutting board":"まな板",
+
+// =====================
+// 家具
+// =====================
+
+"chair":"椅子",
+"office chair":"椅子",
+
+"table":"テーブル",
+
+"desk":"机",
+
+"cabinet":"収納棚",
+
+"shelf":"棚",
+
+"bookcase":"本棚",
+
+"drawer":"引き出し",
+
+// =====================
+// 日用品
+// =====================
+
+"umbrella":"傘",
+
+"backpack":"リュック",
+
+"handbag":"バッグ",
+
+"wallet":"財布",
+
+"suitcase":"スーツケース",
+
+"basket":"かご",
+
+"box":"箱",
+
+"clock":"時計",
+
+"watch":"腕時計",
+
+"mirror":"鏡",
+
+"toy":"おもちゃ",
+
+
+"coffee mug":"カップ",
+"mug":"カップ",
+
+"coffee mug":"ガラスコップ",
+"mug":"ガラスコップ",
+
+
+
+
+
 };
 
+const result =
+  predictions[0].className
+  .split(",")[0]
+  .trim();
 
+let finalResult = result;
 
+const topLabels =
+  predictions.map(p =>
+    p.className.toLowerCase()
+  );
+
+// 缶優先
+if(
+  topLabels.some(label =>
+    label.includes("beer can") ||
+    label.includes("aluminum can") ||
+    label.includes("soda can") ||
+    label.includes("drink can") ||
+    label.includes("oil filter") ||
+    label.includes("fuel filter") ||
+    label.includes("air filter") ||
+    label.includes("measuring cup")
+  )
+){
+  finalResult = "beer can";
+}
+
+// ペットボトル優先
+else if(
+  topLabels.some(label =>
+    label.includes("water bottle") ||
+    label.includes("plastic bottle") ||
+    label.includes("sports bottle") ||
+    label.includes("drink bottle")
+  )
+){
+  finalResult = "water bottle";
+}
+
+// びん優先
+else if(
+  topLabels.some(label =>
+    label.includes("beer bottle") ||
+    label.includes("wine bottle") ||
+    label.includes("glass bottle")
+  )
+){
+  finalResult = "beer bottle";
+}
 
 
 const jpName =
-  itemMap[result] || result;
-
+  itemMap[finalResult] || finalResult;
+ 
 document
   .getElementById("aiResult")
   .innerHTML =
@@ -909,18 +1145,37 @@ const exact =
     item => item.name === jpName
   );
 
+
 if(exact){
 
   let top5Html =
-    "<h3>🔍 AI候補 TOP5</h3>";
+
+   "<h3>🔍 AI候補</h3>";
+
+   const displayedNames = [];
 
   predictions.forEach((p, index) => {
 
-    const enName =
-      p.className.split(",")[0].trim();
+   const enName =
+  p.className.split(",")[0].trim();
 
-    const jpCandidate =
-      itemMap[enName] || enName;
+
+
+const jpCandidate =
+  itemMap[enName] || enName;
+
+if(displayedNames.includes(jpCandidate)){
+    return;
+  }
+
+displayedNames.push(jpCandidate);
+
+  const rank =
+    displayedNames.length;
+
+
+
+
 
     const percent =
       Math.round(p.probability * 100);
@@ -930,10 +1185,11 @@ if(exact){
   class="aiCandidateBtn"
   onclick="selectAIItem('${jpCandidate}')">
 
-  ${index + 1}位：
+  ${rank}位：
   ${jpCandidate}
   (${percent}%)
-
+  
+  
 </button><br>
 `;
   
@@ -989,15 +1245,152 @@ else{
 
 function selectAIItem(name){
 
-  document
-    .getElementById("searchBox")
-    .value = name;
+ 
 
-  document
-    .getElementById("searchBox")
-    .dispatchEvent(
-      new Event("input")
-    );
+  // AI候補名 → ごみデータ名へ変換
+  const aliasMap = {
 
+   "マグカップ":"カップ",
+　　"ビーカー":"カップ",
+　　"ガラスコップ":"カップ",
+　　"ワイングラス":"カップ",
+
+
+    "ワイングラス":"コップ",
+
+    "給水ポット":"ポット",
+    "やかん":"ポット",
+
+    "アルミ缶":"缶",
+    "スチール缶":"缶",
+
+    "スマートフォン":"携帯電話",
+    "ノートパソコン":"パソコン",
+
+    "漫画本":"雑誌"
+  };
+
+ 
+ 
+ 
+
+const searchName =
+  aliasMap[name] || name;
+
+document
+  .getElementById("searchBox")
+  .value = searchName;
+
+document
+  .getElementById("searchBox")
+  .dispatchEvent(
+    new Event("input")
+  );
+
+
+
+
+
+
+
+
+
+
+
+
+
+const hitList =
+  garbageData.filter(
+    item =>
+      item.name.includes(searchName) ||
+      searchName.includes(item.name)
+  );
+
+console.log(
+  garbageData.filter(
+    item =>
+      JSON.stringify(item)
+        .includes("マグカップ")
+  )
+);
+
+
+
+
+
+
+// ↓ここから追加
+const glassList =
+  garbageData.filter(
+    item =>
+      item.name.includes("ガラス")
+  );
+
+console.table(glassList);
+// ↑ここまで追加
+
+
+
+
+
+
+
+if(hitList.length > 0){
+
+  
 }
 
+const exact =
+  garbageData.find(
+    item =>
+      item.name.includes(searchName) ||
+      searchName.includes(item.name)
+  );
+  
+
+
+
+
+
+
+
+
+
+if(hitList.length > 0){
+
+  
+}
+
+
+
+
+
+
+
+
+
+  if(exact){
+
+    document
+      .getElementById("aiResult")
+      .innerHTML =
+      "AI判定：" + exact.name;
+
+    document
+      .getElementById("aiKubun")
+      .innerHTML =
+      `
+      <div class="aiRecommend">
+        <h3>✅ AIおすすめ</h3>
+        <p><b>品目：</b>${exact.name}</p>
+        <p><b>区分：</b>${exact.kubun}</p>
+        <p><b>出し方：</b>${exact.method}</p>
+      </div>
+      `;
+
+  }else{
+
+   
+
+  }
+}
