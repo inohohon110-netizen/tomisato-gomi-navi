@@ -9,17 +9,24 @@ let currentResults = [];
 
 
 
-async function loadModel(){
+async function loadModel() {
 
-  document.getElementById("aiResult").innerHTML =
-    "AIモデル読込中...";
+    document.getElementById("aiResult").innerHTML =
+        "AIモデル読込中...";
 
-  model = await mobilenet.load();
+    model = await mobilenet.load();
 
-  document.getElementById("aiResult").innerHTML =
-    "AI準備完了";
+    document.getElementById("aiResult").innerHTML =
+        "AI準備完了";
 }
 
+// 検索欄へ反映
+const searchInput =
+    document.getElementById("searchInput");
+
+if (searchInput) {
+    searchInput.value = name;
+}
 
 
 // --------------------
@@ -27,38 +34,38 @@ async function loadModel(){
 // --------------------
 
 fetch("gomi.json")
-.then(response => response.json())
-.then(data => {
+    .then(response => response.json())
+    .then(data => {
 
-    garbageData = data;
+        garbageData = data;
 
-    console.log(
-        "読込件数:",
-        garbageData.length
-    );
+        console.log(
+            "読込件数:",
+            garbageData.length
+        );
 
-    document
-    .getElementById("count")
-    .innerHTML =
-    `登録品目数：${garbageData.length}件`;
+        document
+            .getElementById("count")
+            .innerHTML =
+            `登録品目数：${garbageData.length}件`;
 
-    updateGojuonCounts();
+        updateGojuonCounts();
 
-});
+    });
 
 // --------------------
 // 検索イベント
 // --------------------
 
 document
-.getElementById("searchBox")
-.addEventListener("input", searchItem);
+    .getElementById("searchBox")
+    .addEventListener("input", searchItem);
 
 // --------------------
 // 通常検索
 // --------------------
 
-function searchItem(){
+function searchItem() {
 
     displayLimit = 50;
 
@@ -67,58 +74,58 @@ function searchItem(){
 
     const word =
         document
-        .getElementById("searchBox")
-        .value
-        .trim()
-        .toLowerCase();
+            .getElementById("searchBox")
+            .value
+            .trim()
+            .toLowerCase();
 
     const results =
         garbageData
-        .filter(item => {
+            .filter(item => {
 
-            return (
+                return (
 
-                item.name
-                    .toLowerCase()
-                    .includes(word)
+                    item.name
+                        .toLowerCase()
+                        .includes(word)
 
-                ||
+                    ||
 
-                item.yomi
-                    .toLowerCase()
-                    .includes(word)
+                    item.yomi
+                        .toLowerCase()
+                        .includes(word)
 
-            );
+                );
 
-        })
-        .sort((a,b) => {
+            })
+            .sort((a, b) => {
 
-            const yomiA =
-                a.yomi || a.name;
+                const yomiA =
+                    a.yomi || a.name;
 
-            const yomiB =
-                b.yomi || b.name;
+                const yomiB =
+                    b.yomi || b.name;
 
-            return yomiA.localeCompare(
-                yomiB,
-                "ja"
-            );
+                return yomiA.localeCompare(
+                    yomiB,
+                    "ja"
+                );
 
-        });
+            });
 
-    if(word === ""){
+    if (word === "") {
 
         document
-        .getElementById("resultCount")
-        .innerHTML = "";
+            .getElementById("resultCount")
+            .innerHTML = "";
 
     }
-    else{
+    else {
 
         document
-        .getElementById("resultCount")
-        .innerHTML =
-        `検索結果：${results.length}件`;
+            .getElementById("resultCount")
+            .innerHTML =
+            `検索結果：${results.length}件`;
 
     }
 
@@ -133,85 +140,85 @@ function searchItem(){
 // 五十音ボタン検索
 // --------------------
 
-function setKana(kana){
+function setKana(kana) {
 
-clearActiveButtons();
+    clearActiveButtons();
 
     currentKana = kana;
 
-   // 以前の選択状態を解除
+    // 以前の選択状態を解除
 
     document
-    .querySelectorAll("#gojuon button")
-    .forEach(btn => {
+        .querySelectorAll("#gojuon button")
+        .forEach(btn => {
 
-        btn.classList.remove(
-            "activeKana"
-        );
-
-    });
-
-     
-
-    document
-    .getElementById("searchBox")
-    .value = kana;
-
-    const results =
-        garbageData
-        .filter(item => {
-
-const yomi =
-    item.yomi || "";
-
-const kanaMap = {
-
-    "あ":["あ","い","う","え","お"],
-    "か":["か","き","く","け","こ"],
-    "さ":["さ","し","す","せ","そ"],
-    "た":["た","ち","つ","て","と"],
-    "な":["な","に","ぬ","ね","の"],
-    "は":["は","ひ","ふ","へ","ほ"],
-    "ま":["ま","み","む","め","も"],
-    "や":["や","ゆ","よ"],
-    "ら":["ら","り","る","れ","ろ"],
-    "わ":["わ","を","ん"]
-
-};
-
-return kanaMap[currentKana]
-    .includes(yomi);
-
-
-
-
-
-
-
-
-})
-
-
-
-        .sort((a,b) => {
-
-            const yomiA =
-                a.yomi || a.name;
-
-            const yomiB =
-                b.yomi || b.name;
-
-            return yomiA.localeCompare(
-                yomiB,
-                "ja"
+            btn.classList.remove(
+                "activeKana"
             );
 
         });
 
+
+
     document
-    .getElementById("resultCount")
-    .innerHTML =
-    `${kana}行：${results.length}件`;
+        .getElementById("searchBox")
+        .value = kana;
+
+    const results =
+        garbageData
+            .filter(item => {
+
+                const yomi =
+                    item.yomi || "";
+
+                const kanaMap = {
+
+                    "あ": ["あ", "い", "う", "え", "お"],
+                    "か": ["か", "き", "く", "け", "こ"],
+                    "さ": ["さ", "し", "す", "せ", "そ"],
+                    "た": ["た", "ち", "つ", "て", "と"],
+                    "な": ["な", "に", "ぬ", "ね", "の"],
+                    "は": ["は", "ひ", "ふ", "へ", "ほ"],
+                    "ま": ["ま", "み", "む", "め", "も"],
+                    "や": ["や", "ゆ", "よ"],
+                    "ら": ["ら", "り", "る", "れ", "ろ"],
+                    "わ": ["わ", "を", "ん"]
+
+                };
+
+                return kanaMap[currentKana]
+                    .includes(yomi);
+
+
+
+
+
+
+
+
+            })
+
+
+
+            .sort((a, b) => {
+
+                const yomiA =
+                    a.yomi || a.name;
+
+                const yomiB =
+                    b.yomi || b.name;
+
+                return yomiA.localeCompare(
+                    yomiB,
+                    "ja"
+                );
+
+            });
+
+    document
+        .getElementById("resultCount")
+        .innerHTML =
+        `${kana}行：${results.length}件`;
 
     currentResults = results;
 
@@ -224,7 +231,7 @@ return kanaMap[currentKana]
             "btn-" + kana
         );
 
-    if(btn){
+    if (btn) {
 
         btn.classList.add(
             "activeKana"
@@ -240,41 +247,41 @@ return kanaMap[currentKana]
 // 結果表示共通処理
 // --------------------
 
-function displayResults(results){
+function displayResults(results) {
 
     let html = "";
 
     results
-.slice(0,displayLimit)
-.forEach(item => {
+        .slice(0, displayLimit)
+        .forEach(item => {
 
 
 
 
 
 
-        let colorClass = "moeru";
+            let colorClass = "moeru";
 
-        if(
-            item.kubun &&
-            item.kubun.includes("燃えない")
-        ){
-            colorClass = "moenai";
-        }
-        else if(
-            item.kubun &&
-            item.kubun.includes("資源")
-        ){
-            colorClass = "shigen";
-        }
-        else if(
-            item.kubun &&
-            item.kubun.includes("粗大")
-        ){
-            colorClass = "sodai";
-        }
+            if (
+                item.kubun &&
+                item.kubun.includes("燃えない")
+            ) {
+                colorClass = "moenai";
+            }
+            else if (
+                item.kubun &&
+                item.kubun.includes("資源")
+            ) {
+                colorClass = "shigen";
+            }
+            else if (
+                item.kubun &&
+                item.kubun.includes("粗大")
+            ) {
+                colorClass = "sodai";
+            }
 
-      html += `
+            html += `
 <div class="card">
 
     <div
@@ -344,11 +351,11 @@ function displayResults(results){
 
 
 
-    });
+        });
 
-    if(
+    if (
         results.length === 0
-    ){
+    ) {
 
         html = `
 
@@ -362,9 +369,9 @@ function displayResults(results){
 
     }
 
-if(results.length > displayLimit){
+    if (results.length > displayLimit) {
 
-    html += `
+        html += `
 
     <div style="text-align:center;margin-top:20px;">
 
@@ -379,18 +386,18 @@ if(results.length > displayLimit){
 
     `;
 
-}
+    }
 
 
 
     document
-    .getElementById("result")
-    .innerHTML = html;
+        .getElementById("result")
+        .innerHTML = html;
 
 }
 
 
-function filterKubun(kubun){
+function filterKubun(kubun) {
 
     currentKubun = kubun;
 
@@ -398,51 +405,51 @@ function filterKubun(kubun){
 
     // 五十音フィルター
 
-if(currentKana !== ""){
+    if (currentKana !== "") {
 
-    const kanaMap = {
+        const kanaMap = {
 
-        "あ":["あ","い","う","え","お"],
+            "あ": ["あ", "い", "う", "え", "お"],
 
-        "か":["か","き","く","け","こ"],
+            "か": ["か", "き", "く", "け", "こ"],
 
-        "さ":["さ","し","す","せ","そ"],
+            "さ": ["さ", "し", "す", "せ", "そ"],
 
-        "た":["た","ち","つ","て","と"],
+            "た": ["た", "ち", "つ", "て", "と"],
 
-        "な":["な","に","ぬ","ね","の"],
+            "な": ["な", "に", "ぬ", "ね", "の"],
 
-        "は":["は","ひ","ふ","へ","ほ"],
+            "は": ["は", "ひ", "ふ", "へ", "ほ"],
 
-        "ま":["ま","み","む","め","も"],
+            "ま": ["ま", "み", "む", "め", "も"],
 
-        "や":["や","ゆ","よ"],
+            "や": ["や", "ゆ", "よ"],
 
-        "ら":["ら","り","る","れ","ろ"],
+            "ら": ["ら", "り", "る", "れ", "ろ"],
 
-        "わ":["わ","を","ん"]
+            "わ": ["わ", "を", "ん"]
 
-    };
+        };
 
-    results =
-        results.filter(item => {
+        results =
+            results.filter(item => {
 
-            const yomi =
-                item.yomi || "";
+                const yomi =
+                    item.yomi || "";
 
-            return kanaMap[currentKana]
-                .includes(yomi);
+                return kanaMap[currentKana]
+                    .includes(yomi);
 
-        });
+            });
 
-}
+    }
 
 
-    
+
 
     // 区分フィルター
 
-    if(kubun !== ""){
+    if (kubun !== "") {
 
         results =
             results.filter(item => {
@@ -455,7 +462,7 @@ if(currentKana !== ""){
 
     }
 
-    results.sort((a,b) => {
+    results.sort((a, b) => {
 
         const yomiA =
             a.yomi || a.name;
@@ -472,69 +479,69 @@ if(currentKana !== ""){
 
     let title = "";
 
-    if(currentKana !== ""){
+    if (currentKana !== "") {
 
         title +=
             currentKana + "行 ";
 
     }
 
-    if(kubun !== ""){
+    if (kubun !== "") {
 
         title += kubun;
 
     }
-    else{
+    else {
 
         title += "全区分";
 
     }
 
- document
-.getElementById("resultCount")
-.innerHTML =
-`${title}：${results.length}件`;
+    document
+        .getElementById("resultCount")
+        .innerHTML =
+        `${title}：${results.length}件`;
 
-currentResults = results;
+    currentResults = results;
 
-displayResults(results);
+    displayResults(results);
 
-// フィルターボタンの選択表示
+    // フィルターボタンの選択表示
 
-document
-.querySelectorAll(
-    "#filterButtons button"
-)
-.forEach(btn => {
+    document
+        .querySelectorAll(
+            "#filterButtons button"
+        )
+        .forEach(btn => {
 
-    btn.classList.remove(
-        "activeFilter"
-    );
+            btn.classList.remove(
+                "activeFilter"
+            );
 
-});
+        });
 
-let filterId = "btn-all";
+    let filterId = "btn-all";
 
-if(kubun === "燃えるごみ"){
-    filterId = "btn-burn";
+    if (kubun === "燃えるごみ") {
+        filterId = "btn-burn";
+    }
+    else if (kubun === "燃えないごみ") {
+        filterId = "btn-nonburn";
+    }
+    else if (kubun === "資源物") {
+        filterId = "btn-resource";
+    }
+    else if (kubun === "粗大ごみ") {
+        filterId = "btn-bulky";
+    }
+
+    document
+        .getElementById(filterId)
+        .classList.add(
+            "activeFilter"
+        );
+
 }
-else if(kubun === "燃えないごみ"){
-    filterId = "btn-nonburn";
-}
-else if(kubun === "資源物"){
-    filterId = "btn-resource";
-}
-else if(kubun === "粗大ごみ"){
-    filterId = "btn-bulky";
-}
-
-document
-.getElementById(filterId)
-.classList.add(
-    "activeFilter"
-);
-
-}
 
 
 
@@ -543,47 +550,47 @@ document
 
 
 
-function updateGojuonCounts(){
+function updateGojuonCounts() {
 
     const kanaList = [
-        "あ","か","さ","た","な",
-        "は","ま","や","ら","わ"
+        "あ", "か", "さ", "た", "な",
+        "は", "ま", "や", "ら", "わ"
     ];
 
     kanaList.forEach(kana => {
 
- const kanaMap = {
+        const kanaMap = {
 
-    "あ":["あ","い","う","え","お"],
+            "あ": ["あ", "い", "う", "え", "お"],
 
-    "か":["か","き","く","け","こ"],
+            "か": ["か", "き", "く", "け", "こ"],
 
-    "さ":["さ","し","す","せ","そ"],
+            "さ": ["さ", "し", "す", "せ", "そ"],
 
-    "た":["た","ち","つ","て","と"],
+            "た": ["た", "ち", "つ", "て", "と"],
 
-    "な":["な","に","ぬ","ね","の"],
+            "な": ["な", "に", "ぬ", "ね", "の"],
 
-    "は":["は","ひ","ふ","へ","ほ"],
+            "は": ["は", "ひ", "ふ", "へ", "ほ"],
 
-    "ま":["ま","み","む","め","も"],
+            "ま": ["ま", "み", "む", "め", "も"],
 
-    "や":["や","ゆ","よ"],
+            "や": ["や", "ゆ", "よ"],
 
-    "ら":["ら","り","る","れ","ろ"],
+            "ら": ["ら", "り", "る", "れ", "ろ"],
 
-    "わ":["わ","を","ん"]
+            "わ": ["わ", "を", "ん"]
 
-};
+        };
 
-const count = garbageData.filter(item => {
+        const count = garbageData.filter(item => {
 
-    const yomi =
-        item.yomi || "";
+            const yomi =
+                item.yomi || "";
 
-    return kanaMap[kana].includes(yomi);
+            return kanaMap[kana].includes(yomi);
 
-}).length;      
+        }).length;
 
 
 
@@ -593,63 +600,96 @@ const count = garbageData.filter(item => {
                 "btn-" + kana
             );
 
-       if(btn){
+        if (btn) {
 
-    btn.innerHTML =
-      `${kana}行<br>(${count})`;
+            btn.innerHTML =
+                `${kana}行<br>(${count})`;
 
-}
+        }
 
     });
 
 }
 
-function clearActiveButtons(){
+function clearActiveButtons() {
 
     document
-    .querySelectorAll("#gojuon button")
-    .forEach(btn => {
+        .querySelectorAll("#gojuon button")
+        .forEach(btn => {
 
-        btn.classList.remove(
-            "activeKana"
-        );
+            btn.classList.remove(
+                "activeKana"
+            );
 
-    });
+        });
 
     document
-    .querySelectorAll(
-        "#filterButtons button"
-    )
-    .forEach(btn => {
+        .querySelectorAll(
+            "#filterButtons button"
+        )
+        .forEach(btn => {
 
-        btn.classList.remove(
-            "activeFilter"
-        );
+            btn.classList.remove(
+                "activeFilter"
+            );
 
-    });
+        });
 
 }
 
-function clearFilter(){
+function clearFilter() {
 
     displayLimit = 50;
 
     currentKana = "";
     currentKubun = "";
 
+    // 検索欄クリア
+    document.getElementById("searchBox").value = "";
 
+    // 件数クリア
+    document.getElementById("resultCount").innerHTML = "";
 
+    // AI結果クリア
+    document.getElementById("aiResult").innerHTML = "";
+    document.getElementById("aiKubun").innerHTML = "";
 
+    // 画像クリア
+    document.getElementById("preview").src = "";
+    document.getElementById("preview").style.display = "none";
 
+    // ファイル選択クリア
+    document.getElementById("cameraInput").value = "";
+
+    // 五十音選択解除
     document
+        .querySelectorAll("#gojuon button")
+        .forEach(btn => {
+            btn.classList.remove("activeKana");
+        });
+
+    // 区分選択解除
+    document
+        .querySelectorAll("#filterButtons button")
+        .forEach(btn => {
+            btn.classList.remove("activeFilter");
+        });
+
+    // 検索結果クリア
+    displayResults([]);
+}
+
+
+
+document
     .getElementById("searchBox")
     .value = "";
 
-    document
+document
     .getElementById("resultCount")
     .innerHTML = "";
 
-    document
+document
     .querySelectorAll("#gojuon button")
     .forEach(btn => {
 
@@ -659,7 +699,7 @@ function clearFilter(){
 
     });
 
-    document
+document
     .querySelectorAll(
         "#filterButtons button"
     )
@@ -671,9 +711,9 @@ function clearFilter(){
 
     });
 
-    const results =
-        [...garbageData]
-        .sort((a,b)=>{
+const results =
+    [...garbageData]
+        .sort((a, b) => {
 
             const yomiA =
                 a.yomi || a.name;
@@ -688,11 +728,11 @@ function clearFilter(){
 
         });
 
-    displayResults(results);
+displayResults(results);
 
-}
 
-function showMore(){
+
+function showMore() {
 
     displayLimit += 50;
 
@@ -703,484 +743,489 @@ function showMore(){
 }
 
 
-function goTop(){
+function goTop() {
 
-    window.scrollTo({
+    const resultArea =
+        document.getElementById("result");
 
-        top:0,
-
-        behavior:"smooth"
-
-    });
+    if (resultArea) {
+        resultArea.scrollIntoView({
+            behavior: "smooth"
+        });
+    }
 
 }
 
-function toggleCard(title){
 
-    const body =
-        title.nextElementSibling;
 
-    // 他を閉じる
 
-    document
-    .querySelectorAll(".cardBody")
-    .forEach(item => {
 
-        if(item !== body){
+    function toggleCard(title) {
 
-            item.classList.remove(
+        const body =
+            title.nextElementSibling;
+
+        // 他を閉じる
+
+        document
+            .querySelectorAll(".cardBody")
+            .forEach(item => {
+
+                if (item !== body) {
+
+                    item.classList.remove(
+                        "open"
+                    );
+
+                }
+
+            });
+
+        document
+            .querySelectorAll(".cardTitle")
+            .forEach(item => {
+
+                item.innerHTML =
+                    item.innerHTML
+                        .replace("▼", "▶");
+
+            });
+
+        // 開閉
+
+        if (
+            body.classList.contains(
+                "open"
+            )
+        ) {
+
+            body.classList.remove(
                 "open"
             );
 
+            title.innerHTML =
+                title.innerHTML
+                    .replace("▼", "▶");
+
+        }
+        else {
+
+            body.classList.add(
+                "open"
+            );
+
+            title.innerHTML =
+                title.innerHTML
+                    .replace("▶", "▼");
+
         }
 
-    });
-
-    document
-    .querySelectorAll(".cardTitle")
-    .forEach(item => {
-
-        item.innerHTML =
-            item.innerHTML
-            .replace("▼","▶");
-
-    });
-
-    // 開閉
-
-    if(
-        body.classList.contains(
-            "open"
-        )
-    ){
-
-        body.classList.remove(
-            "open"
-        );
-
-        title.innerHTML =
-            title.innerHTML
-            .replace("▼","▶");
-
-    }
-    else{
-
-        body.classList.add(
-            "open"
-        );
-
-        title.innerHTML =
-            title.innerHTML
-            .replace("▶","▼");
-
     }
 
-}
 
 
 
 
+    document.addEventListener("DOMContentLoaded", () => {
 
-document.addEventListener("DOMContentLoaded", () => {
+        const cameraInput =
+            document.getElementById("cameraInput");
 
-  const cameraInput =
-    document.getElementById("cameraInput");
+        const preview =
+            document.getElementById("preview");
 
-  const preview =
-    document.getElementById("preview");
+        if (!cameraInput || !preview) {
+            console.log("cameraInput または preview が見つかりません");
+            return;
+        }
 
-  if(!cameraInput || !preview){
-    console.log("cameraInput または preview が見つかりません");
-    return;
-  }
+        cameraInput.addEventListener("change", (e) => {
 
-  cameraInput.addEventListener("change", (e) => {
+            const file = e.target.files[0];
 
-    const file = e.target.files[0];
+            if (!file) return;
 
-    if(!file) return;
+            preview.src =
+                URL.createObjectURL(file);
 
-    preview.src =
-      URL.createObjectURL(file);
+            preview.style.display = "block";
+        });
 
-    preview.style.display = "block";
-  });
+    });
 
-});
 
 
+    /* 一番最後に追加 */
+    document.addEventListener("DOMContentLoaded", () => {
+        loadModel();
+    });
 
-/* 一番最後に追加 */
-document.addEventListener("DOMContentLoaded", () => {
-    loadModel();
-});
+    async function analyzeImage() {
 
-async function analyzeImage(){
 
-  
 
-  const preview =
-    document.getElementById("preview");
+        const preview =
+            document.getElementById("preview");
 
 
 
 
 
-  if(!preview.src){
+        if (!preview.src) {
 
-    
-    return;
-  }
 
+            return;
+        }
 
 
 
 
-  const predictions =
-    await model.classify(preview);
 
+        const predictions =
+            await model.classify(preview);
 
 
 
 
 
 
- const itemMap = {
 
-  
+        const itemMap = {
 
-// =====================
-// アルミ缶へ統合
-// =====================
 
-"beer can":"アルミ缶",
-"aluminum can":"アルミ缶",
-"soda can":"アルミ缶",
-"drink can":"アルミ缶",
 
-"oil filter":"アルミ缶",
-"fuel filter":"アルミ缶",
-"air filter":"アルミ缶",
-"cartridge":"アルミ缶",
+            // =====================
+            // アルミ缶へ統合
+            // =====================
 
-"metal cylinder":"アルミ缶",
-"cylinder":"アルミ缶",
+            "beer can": "アルミ缶",
+            "aluminum can": "アルミ缶",
+            "soda can": "アルミ缶",
+            "drink can": "アルミ缶",
 
-"measuring cup":"アルミ缶",
-"beaker":"アルミ缶",
+            "oil filter": "アルミ缶",
+            "fuel filter": "アルミ缶",
+            "air filter": "アルミ缶",
+            "cartridge": "アルミ缶",
 
-// =====================
-// スチール缶
-// =====================
+            "metal cylinder": "アルミ缶",
+            "cylinder": "アルミ缶",
 
-"tin can":"スチール缶",
-"steel can":"スチール缶",
-"metal can":"スチール缶",
+            "measuring cup": "アルミ缶",
+            "beaker": "アルミ缶",
 
-// =====================
-// ペットボトルへ統合
-// =====================
+            // =====================
+            // スチール缶
+            // =====================
 
-"water bottle":"ペットボトル",
-"plastic bottle":"ペットボトル",
-"sports bottle":"ペットボトル",
-"drink bottle":"ペットボトル",
+            "tin can": "スチール缶",
+            "steel can": "スチール缶",
+            "metal can": "スチール缶",
 
-"water jug":"ペットボトル",
-"jug":"ペットボトル",
-"pitcher":"ペットボトル",
-"carafe":"ペットボトル",
+            // =====================
+            // ペットボトルへ統合
+            // =====================
 
-"thermos":"ペットボトル",
-"vacuum bottle":"ペットボトル",
-"flask":"ペットボトル",
+            "water bottle": "ペットボトル",
+            "plastic bottle": "ペットボトル",
+            "sports bottle": "ペットボトル",
+            "drink bottle": "ペットボトル",
 
-// =====================
-// ガラスびんへ統合
-// =====================
+            "water jug": "ペットボトル",
+            "jug": "ペットボトル",
+            "pitcher": "ペットボトル",
+            "carafe": "ペットボトル",
 
-"beer bottle":"びん",
-"wine bottle":"びん",
-"medicine bottle":"びん",
-"perfume bottle":"びん",
+            "thermos": "ペットボトル",
+            "vacuum bottle": "ペットボトル",
+            "flask": "ペットボトル",
 
-"glass bottle":"びん",
-"milk bottle":"びん",
-"juice bottle":"びん",
+            // =====================
+            // ガラスびんへ統合
+            // =====================
 
-"jar":"びん",
-"glass jar":"びん",
+            "beer bottle": "びん",
+            "wine bottle": "びん",
+            "medicine bottle": "びん",
+            "perfume bottle": "びん",
 
-// =====================
-// 紙類へ統合
-// =====================
+            "glass bottle": "びん",
+            "milk bottle": "びん",
+            "juice bottle": "びん",
 
-"newspaper":"新聞紙",
+            "jar": "びん",
+            "glass jar": "びん",
 
-"magazine":"雑誌",
-"comic book":"雑誌",
+            // =====================
+            // 紙類へ統合
+            // =====================
 
-"book":"本",
-"textbook":"本",
-"notebook":"本",
+            "newspaper": "新聞紙",
 
-"envelope":"紙類",
-"document":"紙類",
-"folder":"紙類",
+            "magazine": "雑誌",
+            "comic book": "雑誌",
 
-"paper bag":"紙袋",
+            "book": "本",
+            "textbook": "本",
+            "notebook": "本",
 
-"cardboard":"段ボール",
+            "envelope": "紙類",
+            "document": "紙類",
+            "folder": "紙類",
 
-"carton":"紙パック",
+            "paper bag": "紙袋",
 
-// =====================
-// プラ容器へ統合
-// =====================
+            "cardboard": "段ボール",
 
-"plastic container":"プラ容器",
-"food container":"プラ容器",
-"storage container":"プラ容器",
+            "carton": "紙パック",
 
-"plastic tray":"食品トレー",
-"food tray":"食品トレー",
+            // =====================
+            // プラ容器へ統合
+            // =====================
 
-"plastic cup":"プラカップ",
+            "plastic container": "プラ容器",
+            "food container": "プラ容器",
+            "storage container": "プラ容器",
 
-"plastic lid":"プラふた",
+            "plastic tray": "食品トレー",
+            "food tray": "食品トレー",
 
-"plastic wrap":"ラップ",
+            "plastic cup": "プラカップ",
 
-// =====================
-// コップ類
-// =====================
+            "plastic lid": "プラふた",
 
-"coffee mug":"マグカップ",
-"mug":"マグカップ",
+            "plastic wrap": "ラップ",
 
-"cup":"コップ",
-"drinking glass":"コップ",
+            // =====================
+            // コップ類
+            // =====================
 
-"glass":"ガラスコップ",
+            "coffee mug": "マグカップ",
+            "mug": "マグカップ",
 
-"wine glass":"ワイングラス",
+            "cup": "コップ",
+            "drinking glass": "コップ",
 
-// =====================
-// 家電
-// =====================
+            "glass": "ガラスコップ",
 
-"television":"テレビ",
-"radio":"ラジオ",
+            "wine glass": "ワイングラス",
 
-"speaker":"スピーカー",
+            // =====================
+            // 家電
+            // =====================
 
-"headphone":"ヘッドホン",
-"earphone":"イヤホン",
+            "television": "テレビ",
+            "radio": "ラジオ",
 
-"laptop":"ノートパソコン",
+            "speaker": "スピーカー",
 
-"computer":"パソコン",
-"desktop computer":"パソコン",
+            "headphone": "ヘッドホン",
+            "earphone": "イヤホン",
 
-"monitor":"モニター",
-"display":"モニター",
-"screen":"モニター",
+            "laptop": "ノートパソコン",
 
-"printer":"プリンター",
+            "computer": "パソコン",
+            "desktop computer": "パソコン",
 
-"keyboard":"キーボード",
-"mouse":"マウス",
+            "monitor": "モニター",
+            "display": "モニター",
+            "screen": "モニター",
 
-"scanner":"スキャナー",
+            "printer": "プリンター",
 
-"cellular telephone":"携帯電話",
-"mobile phone":"携帯電話",
-"smartphone":"スマートフォン",
+            "keyboard": "キーボード",
+            "mouse": "マウス",
 
-"telephone":"電話機",
+            "scanner": "スキャナー",
 
-"camera":"カメラ",
-"digital camera":"カメラ",
+            "cellular telephone": "携帯電話",
+            "mobile phone": "携帯電話",
+            "smartphone": "スマートフォン",
 
-// =====================
-// 調理器具
-// =====================
+            "telephone": "電話機",
 
-"frying pan":"フライパン",
-"pan":"フライパン",
+            "camera": "カメラ",
+            "digital camera": "カメラ",
 
-"pot":"鍋",
-"saucepan":"鍋",
+            // =====================
+            // 調理器具
+            // =====================
 
-"kettle":"やかん",
+            "frying pan": "フライパン",
+            "pan": "フライパン",
 
-"teapot":"急須",
+            "pot": "鍋",
+            "saucepan": "鍋",
 
-"tray":"トレー",
+            "kettle": "やかん",
 
-"cutting board":"まな板",
+            "teapot": "急須",
 
-// =====================
-// 家具
-// =====================
+            "tray": "トレー",
 
-"chair":"椅子",
-"office chair":"椅子",
+            "cutting board": "まな板",
 
-"table":"テーブル",
+            // =====================
+            // 家具
+            // =====================
 
-"desk":"机",
+            "chair": "椅子",
+            "office chair": "椅子",
 
-"cabinet":"収納棚",
+            "table": "テーブル",
 
-"shelf":"棚",
+            "desk": "机",
 
-"bookcase":"本棚",
+            "cabinet": "収納棚",
 
-"drawer":"引き出し",
+            "shelf": "棚",
 
-// =====================
-// 日用品
-// =====================
+            "bookcase": "本棚",
 
-"umbrella":"傘",
+            "drawer": "引き出し",
 
-"backpack":"リュック",
+            // =====================
+            // 日用品
+            // =====================
 
-"handbag":"バッグ",
+            "umbrella": "傘",
 
-"wallet":"財布",
+            "backpack": "リュック",
 
-"suitcase":"スーツケース",
+            "handbag": "バッグ",
 
-"basket":"かご",
+            "wallet": "財布",
 
-"box":"箱",
+            "suitcase": "スーツケース",
 
-"clock":"時計",
+            "basket": "かご",
 
-"watch":"腕時計",
+            "box": "箱",
 
-"mirror":"鏡",
+            "clock": "時計",
 
-"toy":"おもちゃ",
+            "watch": "腕時計",
 
+            "mirror": "鏡",
 
-"coffee mug":"カップ",
-"mug":"カップ",
+            "toy": "おもちゃ",
 
-"coffee mug":"ガラスコップ",
-"mug":"ガラスコップ",
 
+            "coffee mug": "カップ",
+            "mug": "カップ",
 
+            "coffee mug": "ガラスコップ",
+            "mug": "ガラスコップ",
 
 
 
-};
 
-const result =
-  predictions[0].className
-  .split(",")[0]
-  .trim();
 
-let finalResult = result;
+        };
 
-const topLabels =
-  predictions.map(p =>
-    p.className.toLowerCase()
-  );
+        const result =
+            predictions[0].className
+                .split(",")[0]
+                .trim();
 
-// 缶優先
-if(
-  topLabels.some(label =>
-    label.includes("beer can") ||
-    label.includes("aluminum can") ||
-    label.includes("soda can") ||
-    label.includes("drink can") ||
-    label.includes("oil filter") ||
-    label.includes("fuel filter") ||
-    label.includes("air filter") ||
-    label.includes("measuring cup")
-  )
-){
-  finalResult = "beer can";
-}
+        let finalResult = result;
 
-// ペットボトル優先
-else if(
-  topLabels.some(label =>
-    label.includes("water bottle") ||
-    label.includes("plastic bottle") ||
-    label.includes("sports bottle") ||
-    label.includes("drink bottle")
-  )
-){
-  finalResult = "water bottle";
-}
+        const topLabels =
+            predictions.map(p =>
+                p.className.toLowerCase()
+            );
 
-// びん優先
-else if(
-  topLabels.some(label =>
-    label.includes("beer bottle") ||
-    label.includes("wine bottle") ||
-    label.includes("glass bottle")
-  )
-){
-  finalResult = "beer bottle";
-}
+        // 缶優先
+        if (
+            topLabels.some(label =>
+                label.includes("beer can") ||
+                label.includes("aluminum can") ||
+                label.includes("soda can") ||
+                label.includes("drink can") ||
+                label.includes("oil filter") ||
+                label.includes("fuel filter") ||
+                label.includes("air filter") ||
+                label.includes("measuring cup")
+            )
+        ) {
+            finalResult = "beer can";
+        }
 
+        // ペットボトル優先
+        else if (
+            topLabels.some(label =>
+                label.includes("water bottle") ||
+                label.includes("plastic bottle") ||
+                label.includes("sports bottle") ||
+                label.includes("drink bottle")
+            )
+        ) {
+            finalResult = "water bottle";
+        }
 
-const jpName =
-  itemMap[finalResult] || finalResult;
- 
-document
-  .getElementById("aiResult")
-  .innerHTML =
-  "AI判定：" + jpName;
+        // びん優先
+        else if (
+            topLabels.some(label =>
+                label.includes("beer bottle") ||
+                label.includes("wine bottle") ||
+                label.includes("glass bottle")
+            )
+        ) {
+            finalResult = "beer bottle";
+        }
 
 
-/* AIおすすめ表示 */
-const exact =
-  garbageData.find(
-    item => item.name === jpName
-  );
+        const jpName =
+            itemMap[finalResult] || finalResult;
 
+        document
+            .getElementById("aiResult")
+            .innerHTML =
+            "AI判定：" + jpName;
 
-if(exact){
 
-  let top5Html =
+        /* AIおすすめ表示 */
+        const exact =
+            garbageData.find(
+                item => item.name === jpName
+            );
 
-   "<h3>🔍 AI候補</h3>";
 
-   const displayedNames = [];
+        if (exact) {
 
-  predictions.forEach((p, index) => {
+            let top5Html =
 
-   const enName =
-  p.className.split(",")[0].trim();
+                "<h3>🔍 AI候補</h3>";
 
+            const displayedNames = [];
 
+            predictions.forEach((p, index) => {
 
-const jpCandidate =
-  itemMap[enName] || enName;
+                const enName =
+                    p.className.split(",")[0].trim();
 
-if(displayedNames.includes(jpCandidate)){
-    return;
-  }
 
-displayedNames.push(jpCandidate);
 
-  const rank =
-    displayedNames.length;
+                const jpCandidate =
+                    itemMap[enName] || enName;
 
+                if (displayedNames.includes(jpCandidate)) {
+                    return;
+                }
 
+                displayedNames.push(jpCandidate);
 
+                const rank =
+                    displayedNames.length;
 
 
-    const percent =
-      Math.round(p.probability * 100);
 
-    top5Html += `
+
+
+                const percent =
+                    Math.round(p.probability * 100);
+
+                top5Html += `
 <button
   class="aiCandidateBtn"
   onclick="selectAIItem('${jpCandidate}')">
@@ -1192,14 +1237,14 @@ displayedNames.push(jpCandidate);
   
 </button><br>
 `;
-  
-  });   // ←これを追加
-  
-  
-  
-  document
-    .getElementById("aiKubun")
-    .innerHTML = `
+
+            });   // ←これを追加
+
+
+
+            document
+                .getElementById("aiKubun")
+                .innerHTML = `
       <div class="aiRecommend">
 
         <h3>✅ AIおすすめ</h3>
@@ -1217,180 +1262,161 @@ displayedNames.push(jpCandidate);
       </div>
     `;
 
-}
-else{
+            document
+                .getElementById("aiResult")
+                .scrollIntoView({
+                    behavior: "smooth"
+                });
 
-  document
-    .getElementById("aiKubun")
-    .innerHTML = "";
 
-}
 
 
+        }
+        else {
 
+            document
+                .getElementById("aiKubun")
+                .innerHTML = "";
 
-  
-  document
-    .getElementById("searchBox")
-    .value =
-    jpName;
+        }
 
-  document
-    .getElementById("searchBox")
-    .dispatchEvent(
-      new Event("input")
-    );
 
-}
 
-function selectAIItem(name){
 
- 
 
-  // AI候補名 → ごみデータ名へ変換
-  const aliasMap = {
+        document
+            .getElementById("searchBox")
+            .value =
+            jpName;
 
-   "マグカップ":"カップ",
-　　"ビーカー":"カップ",
-　　"ガラスコップ":"カップ",
-　　"ワイングラス":"カップ",
+        document
+            .getElementById("searchBox")
+            .dispatchEvent(
+                new Event("input")
+            );
 
+    }
 
-    "ワイングラス":"コップ",
+    function selectAIItem(name) {
 
-    "給水ポット":"ポット",
-    "やかん":"ポット",
 
-    "アルミ缶":"缶",
-    "スチール缶":"缶",
 
-    "スマートフォン":"携帯電話",
-    "ノートパソコン":"パソコン",
+        // AI候補名 → ごみデータ名へ変換
+        const aliasMap = {
 
-    "漫画本":"雑誌"
-  };
+            "マグカップ": "カップ",
+            "ビーカー": "カップ",
+            "ガラスコップ": "カップ",
+            "ワイングラス": "カップ",
 
- 
- 
- 
 
-const searchName =
-  aliasMap[name] || name;
+            "ワイングラス": "コップ",
 
-document
-  .getElementById("searchBox")
-  .value = searchName;
+            "給水ポット": "ポット",
+            "やかん": "ポット",
 
-document
-  .getElementById("searchBox")
-  .dispatchEvent(
-    new Event("input")
-  );
+            "アルミ缶": "缶",
+            "スチール缶": "缶",
 
+            "スマートフォン": "携帯電話",
+            "ノートパソコン": "パソコン",
 
+            "漫画本": "雑誌"
+        };
 
 
 
 
 
+        const searchName =
+            aliasMap[name] || name;
 
+        document
+            .getElementById("searchBox")
+            .value = searchName;
 
+        document
+            .getElementById("searchBox")
+            .dispatchEvent(
+                new Event("input")
+            );
 
 
 
+        const hitList =
+            garbageData.filter(
+                item =>
+                    item.name.includes(searchName) ||
+                    searchName.includes(item.name)
+            );
 
-const hitList =
-  garbageData.filter(
-    item =>
-      item.name.includes(searchName) ||
-      searchName.includes(item.name)
-  );
+        console.log(
+            garbageData.filter(
+                item =>
+                    JSON.stringify(item)
+                        .includes("マグカップ")
+            )
+        );
 
-console.log(
-  garbageData.filter(
-    item =>
-      JSON.stringify(item)
-        .includes("マグカップ")
-  )
-);
 
+        // ↓ここから追加
+        const glassList =
+            garbageData.filter(
+                item =>
+                    item.name.includes("ガラス")
+            );
 
+        console.table(glassList);
+        // ↑ここまで追加
 
 
+        if (hitList.length > 0) {
 
 
-// ↓ここから追加
-const glassList =
-  garbageData.filter(
-    item =>
-      item.name.includes("ガラス")
-  );
+        }
 
-console.table(glassList);
-// ↑ここまで追加
+        const exact =
+            garbageData.find(
+                item =>
+                    item.name.includes(searchName) ||
+                    searchName.includes(item.name)
+            );
 
 
+        if (hitList.length > 0) {
 
 
+        }
 
+        if (exact) {
 
+            document
+                .getElementById("aiResult")
+                .innerHTML =
+                "AI判定：" + exact.name;
 
-if(hitList.length > 0){
-
-  
-}
-
-const exact =
-  garbageData.find(
-    item =>
-      item.name.includes(searchName) ||
-      searchName.includes(item.name)
-  );
-  
-
-
-
-
-
-
-
-
-
-if(hitList.length > 0){
-
-  
-}
-
-
-
-
-
-
-
-
-
-  if(exact){
-
-    document
-      .getElementById("aiResult")
-      .innerHTML =
-      "AI判定：" + exact.name;
-
-    document
-      .getElementById("aiKubun")
-      .innerHTML =
-      `
+            document
+                .getElementById("aiKubun")
+                .innerHTML = `
       <div class="aiRecommend">
         <h3>✅ AIおすすめ</h3>
         <p><b>品目：</b>${exact.name}</p>
         <p><b>区分：</b>${exact.kubun}</p>
         <p><b>出し方：</b>${exact.method}</p>
       </div>
-      `;
+    `;
 
-  }else{
+            const resultArea =
+                document.getElementById("result");
 
-   
+            if (resultArea) {
+                resultArea.scrollIntoView({
+                    behavior: "smooth"
+                });
+            }
 
-  }
-}
+        } else {
+
+        }
+
+    }
