@@ -7,6 +7,21 @@ let currentKubun = "";
 let displayLimit = 50;
 let currentResults = [];
 
+function searchGarbage(keyword){
+
+    if(!keyword) return;
+
+    const results = garbageData.filter(item =>
+        item.name.includes(keyword)
+    );
+
+    currentResults = results;
+
+    displayResults(results);
+}
+
+
+
 
 
 async function loadModel() {
