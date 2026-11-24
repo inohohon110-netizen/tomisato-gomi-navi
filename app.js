@@ -11,9 +11,63 @@ function searchGarbage(keyword){
 
     if(!keyword) return;
 
-    const results = garbageData.filter(item =>
-        item.name.includes(keyword)
+   const normalizedKeyword =
+    normalizeText(keyword);
+
+const results = garbageData.filter(item => {
+
+    const normalizedName =
+        normalizeText(item.name);
+
+    return normalizedName.includes(
+        normalizedKeyword
     );
+
+});
+
+results.sort((a, b) => {
+
+    const aName =
+        normalizeText(a.name);
+
+    const bName =
+        normalizeText(b.name);
+
+    const aStarts =
+        aName.startsWith(normalizedKeyword);
+
+    const bStarts =
+        bName.startsWith(normalizedKeyword);
+
+    if (aStarts && !bStarts) return -1;
+
+    if (!aStarts && bStarts) return 1;
+
+    return aName.length - bName.length;
+
+});
+
+results.sort((a, b) => {
+
+    const aName =
+        normalizeText(a.name);
+
+    const bName =
+        normalizeText(b.name);
+
+    const aStarts =
+        aName.startsWith(normalizedKeyword);
+
+    const bStarts =
+        bName.startsWith(normalizedKeyword);
+
+    if (aStarts && !bStarts) return -1;
+
+    if (!aStarts && bStarts) return 1;
+
+    return aName.length - bName.length;
+
+});
 
     currentResults = results;
 
@@ -75,6 +129,22 @@ fetch("gomi.json")
 document
     .getElementById("searchBox")
     .addEventListener("input", searchItem);
+
+// --------------------
+// 文字正規化
+// --------------------
+function normalizeText(str){
+
+    return str
+        .toLowerCase()
+        .replace(/[ァ-ヶ]/g, s =>
+            String.fromCharCode(
+                s.charCodeAt(0) - 0x60
+            )
+        );
+
+}
+
 
 // --------------------
 // 通常検索
