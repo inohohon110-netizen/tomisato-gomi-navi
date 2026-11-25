@@ -7,6 +7,15 @@ let currentKubun = "";
 let displayLimit = 50;
 let currentResults = [];
 
+let searchHistory = [];
+
+
+
+
+
+
+
+
 function searchGarbage(keyword){
 
     if(!keyword) return;
@@ -181,6 +190,74 @@ function normalizeText(str){
 
 }
 
+function updateHistory(){
+
+    const area =
+        document.getElementById("searchHistory");
+
+    let html =
+    `
+    <h4>🕒 最近の検索</h4>
+    
+    <button onclick="clearHistory()">
+    🔄 画面リセット
+</button>
+    
+    
+    <br><br>
+    `;
+
+if(searchHistory.length === 0){
+
+    html += "履歴なし";
+
+}
+
+
+
+    searchHistory.forEach(word => {
+
+        html += `
+        <button
+            onclick="selectHistory('${word}')">
+            ${word}
+        </button>
+        `;
+
+    });
+
+    area.innerHTML = html;
+
+}
+
+
+function selectHistory(word){
+
+    document.getElementById("searchBox").value =
+        word;
+
+    searchItem();
+
+}
+
+function clearHistory(){
+
+    searchHistory = [];
+
+    updateHistory();
+
+    currentResults = [];
+
+    displayResults([]);
+
+    document.getElementById("resultCount")
+        .innerHTML = "";
+
+    document.getElementById("searchBox")
+        .value = "";
+
+}
+
 
 // --------------------
 // 通常検索
@@ -200,6 +277,28 @@ function searchItem() {
             .value
             .trim()
     );
+
+if(word){
+
+    searchHistory =
+        searchHistory.filter(
+            item => item !== word
+        );
+
+    searchHistory.unshift(word);
+
+    searchHistory =
+        searchHistory.slice(0, 10);
+
+    updateHistory();
+
+}
+
+
+
+
+
+
 
 const results =
     garbageData.filter(item => {
