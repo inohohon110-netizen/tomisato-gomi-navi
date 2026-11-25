@@ -133,10 +133,46 @@ document
 // --------------------
 // 文字正規化
 // --------------------
+
 function normalizeText(str){
 
-    return str
-        .toLowerCase()
+    let text = str.toLowerCase();
+
+    const searchAlias = {
+
+        "pet":"ペット",
+        "bottle":"ボトル",
+        "plastic":"プラスチック",
+
+        "can":"缶",
+        "glass":"コップ",
+        "cup":"コップ",
+
+        "paper":"紙",
+        "newspaper":"新聞",
+        "magazine":"雑誌",
+
+        "battery":"電池",
+
+        "spray":"スプレー",
+        "lighter":"ライター",
+
+        "umbrella":"傘",
+
+        "vinyl":"ビニール"
+
+    };
+
+    Object.keys(searchAlias).forEach(key => {
+
+        text = text.replaceAll(
+            key,
+            searchAlias[key]
+        );
+
+    });
+
+    return text
         .replace(/[ァ-ヶ]/g, s =>
             String.fromCharCode(
                 s.charCodeAt(0) - 0x60
@@ -158,32 +194,31 @@ function searchItem() {
     currentKubun = "";
 
     const word =
+    normalizeText(
         document
             .getElementById("searchBox")
             .value
             .trim()
-            .toLowerCase();
+    );
 
-    const results =
-        garbageData
-            .filter(item => {
+const results =
+    garbageData.filter(item => {
 
-                return (
+        return (
 
-                    item.name
-                        .toLowerCase()
-                        .includes(word)
+            normalizeText(item.name)
+                .includes(word)
 
-                    ||
+            ||
 
-                    item.yomi
-                        .toLowerCase()
-                        .includes(word)
+            normalizeText(item.yomi)
+                .includes(word)
 
-                );
+        );
 
-            })
-            .sort((a, b) => {
+    });
+               
+            results.sort((a, b) => {
 
                 const yomiA =
                     a.yomi || a.name;
